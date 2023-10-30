@@ -10,18 +10,21 @@ const root = createRoot(container);
 
 const tasks = [
     {
+        id: 1,
         description: 'Completed task',
         created: 'created 17 seconds ago',
-        className:'completed'
+        //className:'completed'
 
     },
     {
+        id: 2,
         description: 'Editing task',
         created: 'created 5 minutes ago',
         className:'editing'
 
     },
     {
+        id: 3,
         description: 'Active task',
         created: 'created 5 minutes ago',
     }
