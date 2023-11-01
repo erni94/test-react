@@ -4,7 +4,7 @@ import Task from "../task";
 export default class TaskList extends Component {
 
     render() {
-        const { tasks } = this.props
+        const { tasks, onDeleteTask } = this.props
         const tasksHtml = tasks.map(item => {
             return (
                 <Task
@@ -12,6 +12,7 @@ export default class TaskList extends Component {
                     description={item.description}
                     created={item.created}
                     className={item.className}
+                    onDeleteTask={() => onDeleteTask(item.id)}
                 />
             )
         })
