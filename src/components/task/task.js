@@ -6,17 +6,11 @@ export default class Task extends Component {
         completed: false
     }
 
-    toggleTaskCompleted = () => {
-        this.setState(prevState => ({
-            completed: !prevState.completed
-        }));
-    }
 
     render() {
-        const { description, created, className, onDeleteTask } = this.props;
-        const { completed } = this.state;
+        const { description, created, completed, onDeleteTask, toggleTaskCompleted } = this.props;
 
-        let classList =  className;
+        let classList = 'task';
 
         if (completed) {
             classList += ' completed';
@@ -29,7 +23,7 @@ export default class Task extends Component {
                     <label>
             <span
                 className="description"
-                onClick={this.toggleTaskCompleted}
+                onClick={toggleTaskCompleted}
             >{description}</span>
                         <span className="created">{created}</span>
                     </label>
@@ -38,7 +32,7 @@ export default class Task extends Component {
                         onClick={onDeleteTask}
                     ></button>
                 </div>
-                {className === 'editing' ? <input type="text" className="edit" value="Editing task" /> : null}
+               {/* {className === 'editing' ? <input type="text" className="edit" value="Editing task" /> : null}*/}
             </li>
         );
     }

@@ -4,15 +4,16 @@ import Task from "../task";
 export default class TaskList extends Component {
 
     render() {
-        const { tasks, onDeleteTask } = this.props
+        const { tasks, onDeleteTask, toggleTaskCompleted } = this.props
         const tasksHtml = tasks.map(item => {
             return (
                 <Task
                     key={item.id}
                     description={item.description}
                     created={item.created}
-                    className={item.className}
+                    completed={item.completed}
                     onDeleteTask={() => onDeleteTask(item.id)}
+                    toggleTaskCompleted={() => toggleTaskCompleted(item.id)}
                 />
             )
         })

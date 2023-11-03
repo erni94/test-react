@@ -2,11 +2,12 @@ import React from 'react';
 import TasksFilter from "../tasks-filter";
 
 
-const Footer = () => {
+const Footer = (props) => {
     return (
         <footer className="footer">
             <span className="todo-count">1 items left</span>
-            <TasksFilter />
+            <TasksFilter
+                onFilterChange={props.onFilterChange}/>
             <button className="clear-completed">Clear completed</button>
         </footer>
     )
