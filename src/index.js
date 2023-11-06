@@ -1,5 +1,6 @@
 import React from "react";
 import { createRoot} from "react-dom/client";
+import PropTypes from 'prop-types';
 import NewTaskForm from "./components/new-task-form";
 import TaskList from "./components/task-list";
 import Footer from "./components/footer";
@@ -12,31 +13,24 @@ let newID = 100;
 
 class TodoApp extends React.Component {
 
+    static defaultProps = {
+        tasks: [],
+        filter: 'All',
+    };
+
+    static propTypes = {
+        tasks: PropTypes.arrayOf(PropTypes.shape({
+            id: PropTypes.number.isRequired,
+            description: PropTypes.string.isRequired,
+            created: PropTypes.instanceOf(Date).isRequired,
+            completed: PropTypes.bool.isRequired,
+        })),
+        filter: PropTypes.oneOf(['All', 'Active', 'Completed']),
+    };
+
 
     state = {
-        tasks : [
-            {
-                id: 1,
-                description: 'Completed task',
-                created: 'created 17 seconds ago',
-                completed: true,
-
-            },
-            {
-                id: 2,
-                description: 'Editing task',
-                created: 'created 5 minutes ago',
-                //className:'editing',
-                completed: false,
-
-            },
-            {
-                id: 3,
-                description: 'Active task',
-                created: 'created 5 minutes ago',
-                completed: false,
-            }
-        ],
+        tasks : [],
         filter: 'All',
     }
 
@@ -56,7 +50,7 @@ class TodoApp extends React.Component {
         return{
             id: newID,
             description: newTaskValue,
-            created: 'now',
+            created: new Date(),
             completed: false,
         }
     }
@@ -90,14 +84,19 @@ class TodoApp extends React.Component {
 
     filterTasks = (tasks, filter) => {
         if (filter === 'All') {
-            console.log(tasks)
-            return tasks; // Отображаем все задачи
+            return tasks;
         } else if (filter === 'Active') {
-            return tasks.filter(task => !task.completed); // Отображаем незавершенные задачи
+            return tasks.filter(task => !task.completed);
         } else if (filter === 'Completed') {
-            return tasks.filter(task => task.completed); // Отображаем завершенные задачи
+            return tasks.filter(task => task.completed);
         }
 
+    }
+
+    clearCompleted = () =>{
+        this.setState({
+            tasks: this.state.tasks.filter(task => !task.completed)
+        })
     }
 
 
@@ -116,7 +115,11 @@ class TodoApp extends React.Component {
                 onDeleteTask={this.DeleteTask}
                 toggleTaskCompleted={this.toggleTaskCompleted}
                 />
-                <Footer onFilterChange={this.filterChange}/>
+                <Footer
+                    onFilterChange={this.filterChange}
+                    countCompleted={tasks.filter(task => task.completed).length}
+                    onClearCompleted={this.clearCompleted}
+                />
             </section>
             </>
         )}
