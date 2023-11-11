@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 import Task from '../task'
+import './task-list.css'
 
 export default class TaskList extends Component {
   static defaultProps = {

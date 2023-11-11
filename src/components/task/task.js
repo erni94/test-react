@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { formatDistanceToNow } from 'date-fns'
+import './task.css'
 
 export default class Task extends Component {
   static defaultProps = {
@@ -47,7 +48,7 @@ export default class Task extends Component {
             </span>
             <span className="created">{formatDistanceToNow(created, { includeSeconds: true })}</span>
           </label>
-          <button className="icon icon-edit" onClick={this.editTask}></button>
+          <button className="icon icon-edit"></button>
           <button className="icon icon-destroy" onClick={onDeleteTask}></button>
         </div>
         {/* {this.state.editing ? <input type="text" className="edit" value={description}/> : null}*/}

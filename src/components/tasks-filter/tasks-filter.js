@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import './tasks-filter.css'
 
 const TasksFilter = (props) => {
   const [selectedFilter, setFilter] = useState('All')
