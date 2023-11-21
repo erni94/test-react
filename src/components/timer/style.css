@@ -1,0 +1,42 @@
+todo-list li label .description {
+    font-size: 13px;
+    color: #808080	;
+}
+
+.todo-list li .icon {
+    width: 30px;
+    height: 40px;
+    font-size: 34px;
+    color: #cc9a9a;
+    margin: auto 0;
+    transition: color 0.2s ease-out;
+    cursor: pointer;
+}
+
+.todo-list li .icon:hover {
+    color: #af5b5e;
+}
+
+.todo-list li .icon-pause {
+    font-size: 10px;
+    width: 10px;
+    height: 10px;
+}
+.todo-list li .icon-play {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.todo-list li .icon-play {
+    font-size: 15px;
+}
+
+.icon-pause:after {
+    content: '⏸';
+}
+
+.icon-play:after {
+    content: '▶';
+}
+

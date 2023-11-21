@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { formatDistanceToNow } from 'date-fns'
+
+import Timer from '../timer'
 import './task.css'
 
 export default class Task extends Component {
@@ -43,10 +45,11 @@ export default class Task extends Component {
         <div className="view">
           <input className="toggle" type="checkbox" checked={completed} onChange={toggleTaskCompleted} />
           <label>
-            <span className="description" onClick={toggleTaskCompleted}>
+            <span className="title" onClick={toggleTaskCompleted}>
               {description}
             </span>
-            <span className="created">{formatDistanceToNow(created, { includeSeconds: true })}</span>
+            <Timer />
+            <span className="description">{formatDistanceToNow(created, { includeSeconds: true })}</span>
           </label>
           <button className="icon icon-edit"></button>
           <button className="icon icon-destroy" onClick={onDeleteTask}></button>
