@@ -1,38 +1,34 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import './new-task-form.css'
 
-export default class NewTaskForm extends Component {
-  state = {
-    newTaskValue: '',
+export default function NewTaskForm({ addNewTask }) {
+  const [newTaskValue, setNewTaskValue] = useState('')
+
+  const onLabelChange = (e) => {
+    setNewTaskValue(e.target.value)
   }
 
-  onLabelChange = (e) => {
-    this.setState({ newTaskValue: e.target.value })
-  }
-
-  onLabelSubmit = (e) => {
+  const onLabelSubmit = (e) => {
     e.preventDefault()
-    this.props.addNewTask(this.state.newTaskValue)
-    this.setState({ newTaskValue: '' })
+    addNewTask(newTaskValue)
+    setNewTaskValue('')
   }
 
-  render() {
-    return (
-      <header className="header">
-        <h1>todos</h1>
-        <input
-          className="new-todo"
-          onChange={this.onLabelChange}
-          value={this.state.newTaskValue}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              this.onLabelSubmit(e)
-            }
-          }}
-          placeholder="What needs to be done?"
-          autoFocus
-        />
-      </header>
-    )
-  }
+  return (
+    <header className="header">
+      <h1>todos</h1>
+      <input
+        className="new-todo"
+        onChange={onLabelChange}
+        value={newTaskValue}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            onLabelSubmit(e)
+          }
+        }}
+        placeholder="What needs to be done?"
+        autoFocus
+      />
+    </header>
+  )
 }

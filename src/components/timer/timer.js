@@ -1,41 +1,47 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import './style.css'
 
-export default class Timer extends Component {
-  state = {
+export default function Timer() {
+  const [state, setState] = useState({
     isRunning: false,
     startTime: null,
     elapsedTime: 0,
-  }
+  })
 
-  startTimer = () => {
-    this.setState({
+  useEffect(() => {
+    let timerInterval = null
+    if (state.isRunning) {
+      timerInterval = setInterval(() => {
+        setState((prevState) => ({ ...prevState, elapsedTime: new Date() - prevState.startTime }))
+      }, 1000)
+    } else if (!state.isRunning && timerInterval) {
+      clearInterval(timerInterval)
+    }
+    return () => clearInterval(timerInterval)
+  }, [state.isRunning, state.startTime])
+
+  const startTimer = () => {
+    setState((prevState) => ({
+      ...prevState,
       isRunning: true,
-      startTime: new Date() - this.state.elapsedTime,
-    })
-    this.timerInterval = setInterval(() => {
-      this.setState({ elapsedTime: new Date() - this.state.startTime })
-    }, 1000)
+      startTime: new Date() - prevState.elapsedTime,
+    }))
   }
 
-  stopTimer = () => {
-    this.setState({ isRunning: false })
-    clearInterval(this.timerInterval)
+  const stopTimer = () => {
+    setState((prevState) => ({ ...prevState, isRunning: false }))
   }
 
-  render() {
-    let minutes = Math.floor(this.state.elapsedTime / 60000)
-    let seconds = ((this.state.elapsedTime % 60000) / 1000).toFixed(0)
-    return (
-      <span className="description">
-        {this.state.isRunning ? (
-          <button className="icon icon-pause" onClick={this.stopTimer}></button>
-        ) : (
-          <button className="icon icon-play" onClick={this.startTimer}></button>
-        )}
-        &nbsp;
-        {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
-      </span>
-    )
-  }
+  let minutes = Math.floor(state.elapsedTime / 60000)
+  let seconds = ((state.elapsedTime % 60000) / 1000).toFixed(0)
+  return (
+    <span className="description">
+      {state.isRunning ? (
+        <button className="icon icon-pause" onClick={stopTimer}></button>
+      ) : (
+        <button className="icon icon-play" onClick={startTimer}></button>
+      )}
+      {`  ${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`}
+    </span>
+  )
 }

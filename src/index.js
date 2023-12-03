@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import PropTypes from 'prop-types'
 
@@ -13,37 +13,17 @@ const root = createRoot(container)
 
 let newID = 100
 
-class TodoApp extends React.Component {
-  static defaultProps = {
-    tasks: [],
-    filter: 'All',
-  }
+const TodoApp = ({ initialTasks = [], initialFilter = 'All' }) => {
+  const [state, setState] = useState({ tasks: initialTasks, filter: initialFilter })
 
-  static propTypes = {
-    tasks: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        description: PropTypes.string.isRequired,
-        created: PropTypes.instanceOf(Date).isRequired,
-        completed: PropTypes.bool.isRequired,
-      })
-    ),
-    filter: PropTypes.oneOf(['All', 'Active', 'Completed']),
-  }
-
-  state = {
-    tasks: [],
-    filter: 'All',
-  }
-
-  DeleteTask = (id) => {
-    this.setState(({ tasks }) => {
-      const indexDelete = tasks.findIndex((task) => task.id === id)
-      return { tasks: [...tasks.slice(0, indexDelete), ...tasks.slice(indexDelete + 1)] }
+  const DeleteTask = (id) => {
+    setState((prevState) => {
+      const tasks = prevState.tasks.filter((task) => task.id !== id)
+      return { ...prevState, tasks }
     })
   }
 
-  createNewTask = (newTaskValue) => {
+  const createNewTask = (newTaskValue) => {
     newID++
     return {
       id: newID,
@@ -53,72 +33,85 @@ class TodoApp extends React.Component {
     }
   }
 
-  addNewTask = (newTaskValue) => {
-    this.setState(({ tasks }) => {
-      const newTask = this.createNewTask(newTaskValue)
+  const addNewTask = (newTaskValue) => {
+    setState((prevState) => {
+      const newTask = createNewTask(newTaskValue)
       return {
-        tasks: [...tasks.slice(0), newTask],
+        ...prevState,
+        tasks: [...prevState.tasks, newTask],
       }
     })
   }
 
-  toggleTaskCompleted = (id) => {
-    this.setState(({ tasks }) => {
+  const toggleTaskCompleted = (id) => {
+    setState(({ tasks, filter }) => {
       const index = tasks.findIndex((task) => task.id === id)
+      const updatedTasks = [
+        ...tasks.slice(0, index),
+        { ...tasks[index], completed: !tasks[index].completed },
+        ...tasks.slice(index + 1),
+      ]
+
       return {
-        tasks: [
-          ...tasks.slice(0, index),
-          { ...tasks[index], completed: !tasks[index].completed },
-          ...tasks.slice(index + 1),
-        ],
+        tasks: updatedTasks,
+        filter,
       }
     })
   }
 
-  filterChange = (filter) => {
-    this.setState({
+  const filterChange = (filter) => {
+    setState((prevState) => ({
+      ...prevState,
       filter: filter,
-    })
+    }))
   }
 
-  filterTasks = (tasks, filter) => {
+  const filterTasks = (tasks, filter) => {
     if (filter === 'All') {
       return tasks
     } else if (filter === 'Active') {
       return tasks.filter((task) => !task.completed)
     } else if (filter === 'Completed') {
+      console.log(tasks.filter((task) => task.completed))
       return tasks.filter((task) => task.completed)
     }
   }
 
-  clearCompleted = () => {
-    this.setState({
-      tasks: this.state.tasks.filter((task) => !task.completed),
+  const clearCompleted = () => {
+    setState((prevState) => ({
+      ...prevState,
+      tasks: prevState.tasks.filter((task) => !task.completed),
+    }))
+  }
+
+  console.log(state.tasks, state.filter)
+  const filteredTasks = filterTasks(state.tasks, state.filter)
+
+  return (
+    <>
+      <NewTaskForm addNewTask={addNewTask} />
+      <section className="main">
+        <TaskList tasks={filteredTasks} onDeleteTask={DeleteTask} toggleTaskCompleted={toggleTaskCompleted} />
+        <Footer
+          onFilterChange={filterChange}
+          countCompleted={state.tasks.filter((task) => task.completed).length}
+          onClearCompleted={clearCompleted}
+        />
+      </section>
+    </>
+  )
+}
+
+TodoApp.propTypes = {
+  initialTasks: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      description: PropTypes.string.isRequired,
+      created: PropTypes.instanceOf(Date).isRequired,
+      completed: PropTypes.bool.isRequired,
     })
-  }
-
-  render() {
-    const { tasks, filter } = this.state
-    const filteredTasks = this.filterTasks(tasks, filter)
-
-    return (
-      <>
-        <NewTaskForm addNewTask={this.addNewTask} />
-        <section className="main">
-          <TaskList
-            tasks={filteredTasks}
-            onDeleteTask={this.DeleteTask}
-            toggleTaskCompleted={this.toggleTaskCompleted}
-          />
-          <Footer
-            onFilterChange={this.filterChange}
-            countCompleted={tasks.filter((task) => task.completed).length}
-            onClearCompleted={this.clearCompleted}
-          />
-        </section>
-      </>
-    )
-  }
+  ),
+  initialFilter: PropTypes.oneOf(['All', 'Active', 'Completed']),
 }
 
 root.render(<TodoApp />)
